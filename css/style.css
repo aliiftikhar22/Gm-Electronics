@@ -159,6 +159,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     width: 55px;
     height: 55px;
     object-fit: contain;
+    display: block;
     flex-shrink: 0;
 }
 .brand-text{ display:flex; flex-direction:column; line-height:1.2; }

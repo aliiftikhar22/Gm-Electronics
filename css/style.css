@@ -155,16 +155,12 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   height: 78px;
 }
 .brand{ display:flex; align-items:center; gap:12px; color:var(--navy); }
-.brand-mark{
-  width: 42px; height:42px;
-  background: var(--navy);
-  border-radius: 8px;
-  display:flex; align-items:center; justify-content:center;
-  font-family: var(--font-display);
-  font-weight:700;
-  color: var(--white);
-  font-size: 1rem;
-  flex-shrink:0;
+.brand-logo{
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
 }
 .brand-text{ display:flex; flex-direction:column; line-height:1.2; }
 .brand-text strong{ font-family: var(--font-display); font-weight:700; letter-spacing:-0.01em; font-size:1.08rem; color: var(--navy); }

@@ -185,16 +185,32 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   font-family: var(--font-body);
   font-size: .92rem;
   font-weight: 500;
-  color: var(--gray-600);
+  color: #E5E7EB;      /* Light gray */
   padding: 10px 16px;
   border-radius: var(--radius);
   transition: background .2s ease, color .2s ease;
 }
-.main-nav a:hover{ background: var(--gray-50); color: var(--navy); }
-.main-nav a[aria-current="page"]{ color: var(--navy); font-weight: 700; }
 
-.header-actions{ display:flex; align-items:center; gap: 12px; }
-.header-actions .btn{ padding: 11px 20px; font-size:.88rem; }
+.main-nav a:hover{
+  background: rgba(255,255,255,.08);
+  color: #60A5FA;      /* Light blue */
+}
+
+.main-nav a[aria-current="page"]{
+  color: #2563EB;      /* Primary blue */
+  font-weight: 700;
+}
+
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.header-actions .btn{
+  padding:11px 20px;
+  font-size:.88rem;
+}
 
 @media (max-width: 900px){
   .nav-toggle{ display:block; }

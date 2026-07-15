@@ -40,8 +40,8 @@ html{ scroll-behavior: smooth; }
 body{
   margin:0;
   font-family: var(--font-body);
-  color:#FFFFFF;
-  background:#0B0B0D;
+  color: var(--ink);
+  background: var(--white);
   -webkit-font-smoothing: antialiased;
   font-size:16px;
 }

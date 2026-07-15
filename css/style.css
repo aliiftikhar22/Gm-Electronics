@@ -5,23 +5,27 @@
    ========================================================= */
 
 :root{
-  --navy:        #0C2C4E;
-  --navy-700:    #123A63;
-  --navy-800:    #0A2340;
-  --navy-900:    #071A31;
-  --blue:        #1D63C9;
-  --blue-light:  #EAF1FC;
-  --blue-dark:   #124A93;
-  --sky:         #6FA8F0;
-  --gray-50:     #F7F8FA;
-  --gray-100:    #EEF0F3;
-  --gray-200:    #E2E5EA;
-  --gray-400:    #9AA3AF;
-  --gray-600:    #5B6472;
-  --ink:         #1B2430;
-  --white:       #FFFFFF;
-  --green:       #2E7D4F;
-  --green-bg:    #E9F6EE;
+ --navy:        #000000;
+--navy-700:    #0B0B0D;
+--navy-800:    #111111;
+--navy-900:    #000000;
+
+--blue:        #2563EB;
+--blue-light:  #1E3A8A;
+--blue-dark:   #1D4ED8;
+--sky:         #60A5FA;
+
+--gray-50:     #0B0B0D;
+--gray-100:    #111111;
+--gray-200:    #1F2937;
+--gray-400:    #9CA3AF;
+--gray-600:    #D1D5DB;
+
+--ink:         #FFFFFF;
+--white:       #0B0B0D;
+
+--green:       #22C55E;
+--green-bg:    #0F2E1C;
 
   --font-display: 'Poppins', 'Inter', sans-serif;
   --font-body: 'Inter', sans-serif;

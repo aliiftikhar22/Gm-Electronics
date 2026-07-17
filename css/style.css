@@ -164,7 +164,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 82px;
+  height: 90px;
 }
 
 .brand{

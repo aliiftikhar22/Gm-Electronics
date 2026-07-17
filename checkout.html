@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Products — GM Electronics</title>
-<meta name="description" content="Browse refrigerators, air conditioners, microwave ovens, and small appliances from GM Electronics. Retail and wholesale pricing available.">
+<title>Checkout — GM Electronics</title>
+<meta name="description" content="Complete your order with GM Electronics — Cash on Delivery, JazzCash or Easypaisa.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><rect width=%2224%22 height=%2224%22 rx=%224%22 fill=%22%2314213D%22/><text x=%2212%22 y=%2216%22 font-family=%22Arial%22 font-size=%2211%22 fill=%22%23E29A4C%22 text-anchor=%22middle%22 font-weight=%22bold%22>GM</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -192,9 +192,9 @@
         <ul>
           <li><a href="index.html" >Home</a></li>
           <li><a href="about.html" >About</a></li>
-          <li><a href="products.html" aria-current="page">Products</a></li>
+          <li><a href="products.html" >Products</a></li>
           <li><a href="gallery.html" >Gallery</a></li>
-          <li><a href="contact.html" >Contact</a></li>
+          <li><a href="contact.html">Contact</a></li>
         </ul>
       </nav>
 
@@ -213,46 +213,101 @@
 
   <section class="page-hero">
     <div class="container">
-      <div class="breadcrumb">Home / Products</div>
-      <h1>Our appliance range</h1>
-      <p>Refrigerators, air conditioners, microwaves, ovens and small appliances — every item available at retail price, with wholesale pricing for bulk quantity orders.</p>
+      <div class="breadcrumb">Home / Checkout</div>
+      <h1>Checkout</h1>
+      <p>Review your order, add your delivery details, and choose how you'd like to pay. Your order is sent straight to us on WhatsApp for confirmation.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
+      <div class="contact-grid" id="checkout-grid">
 
-      <div class="pricing-note">
-        <svg><use href="#icon-scale"></use></svg>
         <div>
-          <strong>Two pricing tiers, always:</strong> every product below is sold at retail price for individual customers and at wholesale price for bulk quantity purchases. Contact us with the model and quantity you need for an exact quote — we don't offer repair services, sales only.
+          <div class="eyebrow">Your Cart</div>
+          <div id="cart-items-wrap">
+            <div id="cart-items"></div>
+            <div id="cart-empty" class="empty-category" style="display:none;">
+              <div class="cat-icon"><svg><use href="#icon-cart"></use></svg></div>
+              <p>Your cart is empty. <a href="products.html" style="color:var(--blue);font-weight:600;">Browse products</a> to add something.</p>
+            </div>
+          </div>
+          <div class="cart-total-row" id="cart-total-row">
+            <span>Total</span>
+            <strong id="cart-total-amount">Rs. 0</strong>
+          </div>
         </div>
-      </div>
 
-      <div class="gallery-filter" role="tablist" aria-label="Filter products by category">
-        <button class="filter-btn active" data-filter="all">All Categories</button>
-        <button class="filter-btn" data-filter="refrigerators">Refrigerators</button>
-        <button class="filter-btn" data-filter="air-conditioners">Air Conditioners</button>
-        <button class="filter-btn" data-filter="microwaves-ovens">Microwaves &amp; Ovens</button>
-        <button class="filter-btn" data-filter="small-appliances">Small Appliances</button>
-      </div>
+        <div>
+          <div class="plate">
+            <span class="rivet-bl"></span><span class="rivet-br"></span>
+            <div class="eyebrow" style="margin-bottom:18px;">Delivery Details</div>
+            <form id="checkout-form">
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="co-name">Full Name</label>
+                  <input type="text" id="co-name" required>
+                </div>
+                <div class="form-field">
+                  <label for="co-phone">Phone Number</label>
+                  <input type="tel" id="co-phone" required>
+                </div>
+              </div>
+              <div class="form-field">
+                <label for="co-address">Delivery Address</label>
+                <textarea id="co-address" rows="3" required></textarea>
+              </div>
+              <div class="form-field">
+                <label for="co-city">City</label>
+                <input type="text" id="co-city" required>
+              </div>
 
-      <div id="products-root">
-        <div class="products-loading" id="products-loading">
-          <div class="spinner"></div>
-          <p>Loading products…</p>
+              <div class="form-field">
+                <label>Payment Method</label>
+                <div class="payment-options">
+                  <label class="payment-option">
+                    <input type="radio" name="payment" value="COD" checked>
+                    <span class="payment-option-card">
+                      <svg><use href="#icon-truck"></use></svg>
+                      <span>Cash on Delivery</span>
+                    </span>
+                  </label>
+                  <label class="payment-option">
+                    <input type="radio" name="payment" value="JazzCash">
+                    <span class="payment-option-card">
+                      <svg><use href="#icon-phone"></use></svg>
+                      <span>JazzCash</span>
+                    </span>
+                  </label>
+                  <label class="payment-option">
+                    <input type="radio" name="payment" value="Easypaisa">
+                    <span class="payment-option-card">
+                      <svg><use href="#icon-phone"></use></svg>
+                      <span>Easypaisa</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- TODO: replace with your real JazzCash / Easypaisa account title & number -->
+              <div class="payment-instructions" id="jazzcash-instructions" style="display:none;">
+                <strong>Pay via JazzCash</strong>
+                <p>Send the total amount to <strong>0300-0000000</strong> (Account Title: GM Electronics). After sending, tap "Place Order" below — we'll confirm your payment on WhatsApp, so keep your transaction screenshot handy.</p>
+              </div>
+              <div class="payment-instructions" id="easypaisa-instructions" style="display:none;">
+                <strong>Pay via Easypaisa</strong>
+                <p>Send the total amount to <strong>0300-0000000</strong> (Account Title: GM Electronics). After sending, tap "Place Order" below — we'll confirm your payment on WhatsApp, so keep your transaction screenshot handy.</p>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block" id="place-order-btn">
+                <svg><use href="#icon-whatsapp"></use></svg> Place Order via WhatsApp
+              </button>
+              <p class="checkout-note">Tapping "Place Order" opens WhatsApp with your order details filled in — just hit send there to confirm with us.</p>
+            </form>
+          </div>
         </div>
+
       </div>
-
-    </div>
-  </section>
-
-  <section class="section section-navy">
-    <div class="container" style="text-align:center;">
-      <div class="eyebrow" style="justify-content:center;">Don't See A Model Listed?</div>
-      <h2>Ask us — our stock changes regularly</h2>
-      <p style="max-width:56ch;margin:0 auto 24px;">Tell us the brand, capacity or model you're after and whether it's for personal use or bulk quantity, and we'll confirm availability and pricing.</p>
-      <a href="contact.html" class="btn btn-primary">Send an Enquiry</a>
     </div>
   </section>
 
@@ -308,11 +363,10 @@
   <script src="js/cart.js"></script>
   <script src="js/script.js"></script>
 
-  <!-- Firebase (product catalogue is loaded live from Firestore) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="js/firebase-config.js"></script>
-  <script src="js/products.js"></script>
+  <script src="js/checkout.js"></script>
 
 </body>
 </html>

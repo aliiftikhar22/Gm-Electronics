@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Products — GM Electronics</title>
-<meta name="description" content="Browse refrigerators, air conditioners, microwave ovens, and small appliances from GM Electronics. Retail and wholesale pricing available.">
+<title>Staff Login — GM Electronics</title>
+<meta name="description" content="GM Electronics staff admin panel.">
+<meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><rect width=%2224%22 height=%2224%22 rx=%224%22 fill=%22%2314213D%22/><text x=%2212%22 y=%2216%22 font-family=%22Arial%22 font-size=%2211%22 fill=%22%23E29A4C%22 text-anchor=%22middle%22 font-weight=%22bold%22>GM</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -192,9 +193,9 @@
         <ul>
           <li><a href="index.html" >Home</a></li>
           <li><a href="about.html" >About</a></li>
-          <li><a href="products.html" aria-current="page">Products</a></li>
+          <li><a href="products.html" >Products</a></li>
           <li><a href="gallery.html" >Gallery</a></li>
-          <li><a href="contact.html" >Contact</a></li>
+          <li><a href="contact.html">Contact</a></li>
         </ul>
       </nav>
 
@@ -211,48 +212,116 @@
     </div>
   </header>
 
-  <section class="page-hero">
-    <div class="container">
-      <div class="breadcrumb">Home / Products</div>
-      <h1>Our appliance range</h1>
-      <p>Refrigerators, air conditioners, microwaves, ovens and small appliances — every item available at retail price, with wholesale pricing for bulk quantity orders.</p>
-    </div>
-  </section>
-
-  <section class="section">
+  <section class="section admin-section">
     <div class="container">
 
-      <div class="pricing-note">
-        <svg><use href="#icon-scale"></use></svg>
-        <div>
-          <strong>Two pricing tiers, always:</strong> every product below is sold at retail price for individual customers and at wholesale price for bulk quantity purchases. Contact us with the model and quantity you need for an exact quote — we don't offer repair services, sales only.
+      <!-- Login gate -->
+      <div id="admin-login" class="admin-login">
+        <div class="plate" style="max-width:420px;margin:40px auto;">
+          <span class="rivet-bl"></span><span class="rivet-br"></span>
+          <div class="cat-icon" style="margin:0 auto 18px;"><svg><use href="#icon-lock"></use></svg></div>
+          <h2 style="text-align:center;">Staff Login</h2>
+          <p style="text-align:center;">Sign in to manage products and view orders.</p>
+          <form id="login-form">
+            <div class="form-field">
+              <label for="admin-email">Email</label>
+              <input type="email" id="admin-email" required>
+            </div>
+            <div class="form-field">
+              <label for="admin-password">Password</label>
+              <input type="password" id="admin-password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+              <svg><use href="#icon-lock"></use></svg> Sign In
+            </button>
+            <div class="form-status" id="login-status"></div>
+          </form>
         </div>
       </div>
 
-      <div class="gallery-filter" role="tablist" aria-label="Filter products by category">
-        <button class="filter-btn active" data-filter="all">All Categories</button>
-        <button class="filter-btn" data-filter="refrigerators">Refrigerators</button>
-        <button class="filter-btn" data-filter="air-conditioners">Air Conditioners</button>
-        <button class="filter-btn" data-filter="microwaves-ovens">Microwaves &amp; Ovens</button>
-        <button class="filter-btn" data-filter="small-appliances">Small Appliances</button>
-      </div>
+      <!-- Admin dashboard (shown after login) -->
+      <div id="admin-dashboard" style="display:none;">
+        <div class="admin-header-row">
+          <div>
+            <div class="eyebrow">Staff Area</div>
+            <h1>Store Admin</h1>
+          </div>
+          <button class="btn btn-ghost" id="logout-btn">
+            <svg><use href="#icon-logout"></use></svg> Log Out
+          </button>
+        </div>
 
-      <div id="products-root">
-        <div class="products-loading" id="products-loading">
-          <div class="spinner"></div>
-          <p>Loading products…</p>
+        <div class="admin-tabs">
+          <button class="filter-btn active" data-tab="products">Products</button>
+          <button class="filter-btn" data-tab="orders">Orders</button>
+        </div>
+
+        <!-- Products tab -->
+        <div class="admin-tab-panel" id="tab-products">
+          <div class="plate" style="margin-bottom:32px;">
+            <span class="rivet-bl"></span><span class="rivet-br"></span>
+            <div class="eyebrow" id="product-form-title" style="margin-bottom:18px;">Add A Product</div>
+            <form id="product-form">
+              <input type="hidden" id="product-id">
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="p-name">Product Name</label>
+                  <input type="text" id="p-name" required>
+                </div>
+                <div class="form-field">
+                  <label for="p-category">Category</label>
+                  <select id="p-category" required>
+                    <option value="refrigerators">Refrigerators</option>
+                    <option value="air-conditioners">Air Conditioners</option>
+                    <option value="microwaves-ovens">Microwaves &amp; Ovens</option>
+                    <option value="small-appliances">Small Appliances</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="p-price-retail">Retail Price (Rs.)</label>
+                  <input type="number" id="p-price-retail" min="0" required>
+                </div>
+                <div class="form-field">
+                  <label for="p-price-wholesale">Wholesale Price (Rs.) — optional</label>
+                  <input type="number" id="p-price-wholesale" min="0">
+                </div>
+              </div>
+              <div class="form-field">
+                <label for="p-description">Description</label>
+                <textarea id="p-description" rows="3"></textarea>
+              </div>
+              <div class="form-field">
+                <label for="p-image">Product Photo</label>
+                <input type="file" id="p-image" accept="image/*">
+                <div id="p-image-preview" class="admin-image-preview"></div>
+              </div>
+              <div style="display:flex;gap:12px;">
+                <button type="submit" class="btn btn-primary" id="product-save-btn">
+                  <svg><use href="#icon-plus"></use></svg> <span id="product-save-label">Add Product</span>
+                </button>
+                <button type="button" class="btn btn-ghost" id="product-cancel-edit" style="display:none;">Cancel Edit</button>
+              </div>
+              <div class="form-status" id="product-status"></div>
+            </form>
+          </div>
+
+          <div class="eyebrow">Current Products</div>
+          <div id="admin-products-list" class="admin-products-list">
+            <p>Loading…</p>
+          </div>
+        </div>
+
+        <!-- Orders tab -->
+        <div class="admin-tab-panel" id="tab-orders" style="display:none;">
+          <div class="eyebrow">Recent Orders</div>
+          <div id="admin-orders-list" class="admin-orders-list">
+            <p>Loading…</p>
+          </div>
         </div>
       </div>
 
-    </div>
-  </section>
-
-  <section class="section section-navy">
-    <div class="container" style="text-align:center;">
-      <div class="eyebrow" style="justify-content:center;">Don't See A Model Listed?</div>
-      <h2>Ask us — our stock changes regularly</h2>
-      <p style="max-width:56ch;margin:0 auto 24px;">Tell us the brand, capacity or model you're after and whether it's for personal use or bulk quantity, and we'll confirm availability and pricing.</p>
-      <a href="contact.html" class="btn btn-primary">Send an Enquiry</a>
     </div>
   </section>
 
@@ -308,11 +377,12 @@
   <script src="js/cart.js"></script>
   <script src="js/script.js"></script>
 
-  <!-- Firebase (product catalogue is loaded live from Firestore) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="js/firebase-config.js"></script>
-  <script src="js/products.js"></script>
+  <script src="js/cloudinary-config.js"></script>
+  <script src="js/admin.js"></script>
 
 </body>
 </html>

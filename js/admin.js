@@ -1300,7 +1300,7 @@ db.collection('products')
       });
 
   });
-    
+  }
   /* ---------------- Orders ---------------- */
   var ordersInitialized = false;
   function initOrders() {

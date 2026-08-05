@@ -309,6 +309,106 @@ document.addEventListener('click', function (e) {
   }
 
 });
+// ================= PRODUCT IMAGE GALLERY =================
+
+document.addEventListener('click', function (e) {
+
+  var prevButton = e.target.closest('.product-gallery-prev');
+  var nextButton = e.target.closest('.product-gallery-next');
+
+  if (!prevButton && !nextButton) return;
+
+  var productId =
+    (prevButton || nextButton).getAttribute(
+      prevButton
+        ? 'data-gallery-prev'
+        : 'data-gallery-next'
+    );
+
+  if (!productId) return;
+
+  // Find product
+  var product = null;
+
+  if (typeof products !== 'undefined' && Array.isArray(products)) {
+    product = products.find(function (p) {
+      return String(p.id) === String(productId);
+    });
+  }
+
+  if (!product &&
+      typeof productCache !== 'undefined' &&
+      Array.isArray(productCache)) {
+
+    product = productCache.find(function (p) {
+      return String(p.id) === String(productId);
+    });
+  }
+
+  if (!product) return;
+
+  // Get images
+  var images =
+    Array.isArray(product.images) && product.images.length
+      ? product.images
+      : (
+          product.imageUrl
+            ? [product.imageUrl]
+            : []
+        );
+
+  if (images.length <= 1) return;
+
+  // Find card
+  var card =
+    (prevButton || nextButton).closest('.product-card');
+
+  if (!card) return;
+
+  var mainImage =
+    card.querySelector('.product-main-image');
+
+  if (!mainImage) return;
+
+  // Current image index
+  var currentIndex =
+    Number(card.getAttribute('data-image-index'));
+
+  if (!Number.isInteger(currentIndex)) {
+    currentIndex = 0;
+  }
+
+  // Move previous
+  if (prevButton) {
+    currentIndex--;
+
+    if (currentIndex < 0) {
+      currentIndex = images.length - 1;
+    }
+  }
+
+  // Move next
+  if (nextButton) {
+    currentIndex++;
+
+    if (currentIndex >= images.length) {
+      currentIndex = 0;
+    }
+  }
+
+  // Save current index
+  card.setAttribute(
+    'data-image-index',
+    currentIndex
+  );
+
+  // Change image
+  mainImage.src =
+    images[currentIndex];
+
+  mainImage.alt =
+    product.name || '';
+});
 function renderCategoryFilters() {
   var filters = document.getElementById('category-filters');
   if (!filters) return;

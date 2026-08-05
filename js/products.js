@@ -425,14 +425,23 @@ document.addEventListener('DOMContentLoaded', function () {
       snapshot.forEach(function (doc) {
         var d = doc.data();
         products.push({
-          id: doc.id,
-          name: d.name || 'Unnamed product',
-          category: d.category,
-          priceRetail: Number(d.priceRetail) || 0,
-          priceWholesale: d.priceWholesale ? Number(d.priceWholesale) : null,
-          description: d.description || '',
-          imageUrl: d.imageUrl || ''
-        });
+  id: doc.id,
+  name: d.name || 'Unnamed product',
+  category: d.category,
+  priceRetail: Number(d.priceRetail) || 0,
+  priceWholesale: d.priceWholesale ? Number(d.priceWholesale) : null,
+  description: d.description || '',
+
+  imageUrl: d.imageUrl || '',
+
+  images: Array.isArray(d.images) && d.images.length
+    ? d.images
+    : (d.imageUrl ? [d.imageUrl] : []),
+
+  colors: Array.isArray(d.colors)
+    ? d.colors
+    : []
+});
       });
       renderProducts(products);
 

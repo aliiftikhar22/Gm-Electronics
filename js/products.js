@@ -186,6 +186,129 @@ function productCardHtml(p) {
     '</div>'
   );
 }
+// ================= PRODUCT COLOR IMAGE SWITCH =================
+
+document.addEventListener('click', function (e) {
+
+  var colorButton = e.target.closest('.product-color-swatch');
+
+  if (!colorButton) return;
+
+  var productId = colorButton.dataset.productId;
+  var colorIndex = Number(colorButton.dataset.colorIndex);
+
+  if (!productId || !Number.isInteger(colorIndex)) return;
+
+
+  /*
+   * Find the product currently loaded from Firestore.
+   *
+   * This assumes your existing products array/cache
+   * is called "products".
+   */
+  var product = null;
+
+  if (typeof products !== 'undefined' && Array.isArray(products)) {
+
+    product = products.find(function (p) {
+      return String(p.id) === String(productId);
+    });
+  }
+
+
+  /*
+   * Some versions of your old project may use
+   * a different product cache.
+   */
+  if (!product && typeof productCache !== 'undefined' && Array.isArray(productCache)) {
+
+    product = productCache.find(function (p) {
+      return String(p.id) === String(productId);
+    });
+  }
+
+
+  if (!product) return;
+
+
+  var colors = Array.isArray(product.colors)
+    ? product.colors
+    : [];
+
+  var selectedColor = colors[colorIndex];
+
+  if (!selectedColor) return;
+
+
+  /*
+   * Get the image belonging to this color.
+   */
+  var imageIndex = Number(selectedColor.imageIndex);
+
+  var images = Array.isArray(product.images)
+    ? product.images
+    : (product.imageUrl ? [product.imageUrl] : []);
+
+
+  if (
+    !Number.isInteger(imageIndex) ||
+    !images[imageIndex]
+  ) {
+    return;
+  }
+
+
+  /*
+   * Find the product card.
+   */
+  var card = colorButton.closest('.product-card');
+
+  if (!card) return;
+
+
+  /*
+   * Change the main product image.
+   */
+  var mainImage =
+    card.querySelector('.product-main-image');
+
+  if (mainImage) {
+
+    mainImage.src = images[imageIndex];
+
+    mainImage.alt =
+      product.name +
+      ' - ' +
+      (selectedColor.name || '');
+  }
+
+
+  /*
+   * Change active swatch.
+   */
+  card
+    .querySelectorAll('.product-color-swatch')
+    .forEach(function (button) {
+
+      button.classList.remove('active');
+    });
+
+  colorButton.classList.add('active');
+
+
+  /*
+   * Change displayed color name.
+   */
+  var colorLabel =
+    card.querySelector('.product-selected-color');
+
+  if (colorLabel) {
+
+    colorLabel.textContent =
+      selectedColor.name || '';
+  }
+
+});
 function renderCategoryFilters() {
   var filters = document.getElementById('category-filters');
   if (!filters) return;

@@ -17,30 +17,175 @@ function escapeHtml(str) {
 }
 
 function productCardHtml(p) {
-  var img = p.imageUrl
-    ? '<img src="' + escapeHtml(p.imageUrl) + '" alt="' + escapeHtml(p.name) + '" loading="lazy">'
-    : '<div class="product-card-noimg"><svg><use href="#icon-image"></use></svg></div>';
 
-  var wholesale = p.priceWholesale
-    ? '<div class="product-card-wholesale">Wholesale (bulk): ' + GMCart.formatPKR(p.priceWholesale) + '</div>'
+  /* ================= IMAGES ================= */
+
+  var images = Array.isArray(p.images) && p.images.length
+    ? p.images
+    : (p.imageUrl ? [p.imageUrl] : []);
+
+  var mainImage = images.length
+    ? images[0]
     : '';
 
+  var img = mainImage
+    ? '<img src="' + escapeHtml(mainImage) + '"' +
+        ' alt="' + escapeHtml(p.name) + '"' +
+        ' loading="lazy"' +
+        ' class="product-main-image">'
+    : '<div class="product-card-noimg">' +
+        '<svg><use href="#icon-image"></use></svg>' +
+      '</div>';
+
+
+  /* ================= IMAGE GALLERY ================= */
+
+  var galleryControls = '';
+
+  if (images.length > 1) {
+
+    galleryControls =
+      '<button type="button" class="product-gallery-prev" ' +
+        'data-gallery-prev="' + p.id + '">‹</button>' +
+
+      '<button type="button" class="product-gallery-next" ' +
+        'data-gallery-next="' + p.id + '">›</button>';
+  }
+
+
+  /* ================= COLORS ================= */
+
+  var colors = Array.isArray(p.colors)
+    ? p.colors
+    : [];
+
+  var colorHtml = '';
+
+  if (colors.length) {
+
+    colorHtml =
+      '<div class="product-colors">' +
+
+        '<div class="product-colors-label">Color</div>' +
+
+        '<div class="product-color-swatches">';
+
+    colors.forEach(function (color, index) {
+
+      var hex = color.hex || '#ffffff';
+
+      colorHtml +=
+        '<button ' +
+          'type="button" ' +
+          'class="product-color-swatch ' +
+            (index === 0 ? 'active' : '') +
+          '" ' +
+
+          'style="background-color:' +
+            escapeHtml(hex) +
+          ';" ' +
+
+          'data-product-id="' +
+            escapeHtml(p.id) +
+          '" ' +
+
+          'data-color-index="' +
+            index +
+          '" ' +
+
+          'title="' +
+            escapeHtml(color.name || 'Color') +
+          '" ' +
+
+          'aria-label="' +
+            escapeHtml(color.name || 'Color') +
+          '">' +
+
+        '</button>';
+    });
+
+    colorHtml +=
+        '</div>' +
+
+        '<div class="product-selected-color">' +
+          escapeHtml(colors[0].name || '') +
+        '</div>' +
+
+      '</div>';
+  }
+
+
+  /* ================= PRICE ================= */
+
+  var wholesale = p.priceWholesale
+    ? '<div class="product-card-wholesale">' +
+        'Wholesale (bulk): ' +
+        GMCart.formatPKR(p.priceWholesale) +
+      '</div>'
+    : '';
+
+
+  /* ================= CARD ================= */
+
   return (
-    '<div class="product-card">' +
-      '<div class="product-card-img">' + img + '</div>' +
-      '<div class="product-card-body">' +
-        '<h3>' + escapeHtml(p.name) + '</h3>' +
-        (p.description ? '<p class="product-card-desc">' + escapeHtml(p.description) + '</p>' : '') +
-        '<div class="product-card-price">' + GMCart.formatPKR(p.priceRetail) + '</div>' +
-        wholesale +
-        '<button class="btn btn-primary btn-block add-to-cart-btn" data-id="' + p.id + '">' +
-          '<svg><use href="#icon-cart"></use></svg> Add to Cart' +
-        '</button>' +
+
+    '<div class="product-card" data-product-id="' +
+      escapeHtml(p.id) +
+    '">' +
+
+      '<div class="product-card-img">' +
+
+        '<div class="product-image-gallery" ' +
+          'data-gallery-product="' +
+          escapeHtml(p.id) +
+        '">' +
+
+          img +
+
+          galleryControls +
+
+        '</div>' +
+
       '</div>' +
+
+
+      '<div class="product-card-body">' +
+
+        '<h3>' +
+          escapeHtml(p.name) +
+        '</h3>' +
+
+        (
+          p.description
+            ? '<p class="product-card-desc">' +
+                escapeHtml(p.description) +
+              '</p>'
+            : ''
+        ) +
+
+        '<div class="product-card-price">' +
+          GMCart.formatPKR(p.priceRetail) +
+        '</div>' +
+
+        wholesale +
+
+        colorHtml +
+
+        '<button class="btn btn-primary btn-block add-to-cart-btn" ' +
+          'data-id="' +
+            escapeHtml(p.id) +
+          '">' +
+
+          '<svg><use href="#icon-cart"></use></svg> ' +
+          'Add to Cart' +
+
+        '</button>' +
+
+      '</div>' +
+
     '</div>'
   );
 }
-
 function renderCategoryFilters() {
   var filters = document.getElementById('category-filters');
   if (!filters) return;

@@ -346,67 +346,6 @@ var productImages = [];
 var productColors = [];
 
 
-/* ---------------- MULTIPLE IMAGE PREVIEW ---------------- */
-
-imageInput.addEventListener('change', function () {
-
-  imagePreview.innerHTML = '';
-  productImages = [];
-
-  Array.from(imageInput.files || []).forEach(function (file, index) {
-
-    productImages.push({
-      file: file,
-      url: URL.createObjectURL(file)
-    });
-
-    var wrapper = document.createElement('div');
-
-    wrapper.style.cssText =
-      'position:relative;' +
-      'border:1px solid rgba(255,255,255,.12);' +
-      'border-radius:10px;' +
-      'overflow:hidden;' +
-      'background:#111;' +
-      'aspect-ratio:1/1;';
-
-    var img = document.createElement('img');
-
-    img.src = productImages[index].url;
-
-    img.style.cssText =
-      'width:100%;' +
-      'height:100%;' +
-      'object-fit:contain;' +
-      'display:block;';
-
-    wrapper.appendChild(img);
-
-    if (index === 0) {
-
-      var mainBadge = document.createElement('span');
-
-      mainBadge.textContent = 'MAIN';
-
-      mainBadge.style.cssText =
-        'position:absolute;' +
-        'left:6px;' +
-        'bottom:6px;' +
-        'padding:3px 6px;' +
-        'font-size:9px;' +
-        'font-weight:700;' +
-        'background:#fff;' +
-        'color:#111;' +
-        'border-radius:5px;';
-
-      wrapper.appendChild(mainBadge);
-    }
-
-    imagePreview.appendChild(wrapper);
-  });
-
-});
-
 
 /* ---------------- COLORS ---------------- */
 

@@ -625,70 +625,7 @@ if (addColorBtn) {
       });
     });
 
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      statusEl.classList.remove('show', 'ok');
-      var id = document.getElementById('product-id').value;
-      var data = {
-        name: document.getElementById('p-name').value.trim(),
-        category: document.getElementById('p-category').value,
-        priceRetail: Number(document.getElementById('p-price-retail').value) || 0,
-        priceWholesale: document.getElementById('p-price-wholesale').value
-          ? Number(document.getElementById('p-price-wholesale').value) : null,
-        description: document.getElementById('p-description').value.trim()
-      };
-      if (!id) data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-
-      var file = imageInput.files[0];
-      var saveBtn = document.getElementById('product-save-btn');
-      saveBtn.disabled = true;
-
-      function saveDoc() {
-        var promise = id
-          ? db.collection('products').doc(id).update(data)
-          : db.collection('products').add(data);
-        promise.then(function () {
-          statusEl.textContent = 'Saved!';
-          statusEl.classList.add('show', 'ok');
-          resetForm();
-        }).catch(function (err) {
-          statusEl.textContent = 'Error: ' + err.message;
-          statusEl.classList.add('show');
-        }).finally(function () { saveBtn.disabled = false; });
-      }
-
-      if (file) {
-        if (typeof CLOUDINARY_CLOUD_NAME === 'undefined' || CLOUDINARY_CLOUD_NAME === 'YOUR_CLOUD_NAME') {
-          statusEl.textContent = 'Photo uploads need Cloudinary set up first — see README.md.';
-          statusEl.classList.add('show');
-          saveBtn.disabled = false;
-          return;
-        }
-        var uploadData = new FormData();
-        uploadData.append('file', file);
-        uploadData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-
-        fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD_NAME + '/image/upload', {
-          method: 'POST',
-          body: uploadData
-        })
-          .then(function (res) { return res.json(); })
-          .then(function (result) {
-            if (!result.secure_url) throw new Error(result.error ? result.error.message : 'Upload failed');
-            data.imageUrl = result.secure_url;
-            saveDoc();
-          })
-          .catch(function (err) {
-            statusEl.textContent = 'Image upload failed: ' + err.message;
-            statusEl.classList.add('show');
-            saveBtn.disabled = false;
-          });
-      } else {
-        saveDoc();
-      }
-    });
-  }
-
+    
   /* ---------------- Orders ---------------- */
   var ordersInitialized = false;
   function initOrders() {

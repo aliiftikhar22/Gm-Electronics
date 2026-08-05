@@ -1348,5 +1348,5 @@ db.collection('products')
         });
       });
     });
-  }
 });
+}

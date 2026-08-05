@@ -624,7 +624,7 @@ if (addColorBtn) {
         });
       });
     });
-
+  }
     
   /* ---------------- Orders ---------------- */
   var ordersInitialized = false;

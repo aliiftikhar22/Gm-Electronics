@@ -295,10 +295,85 @@
                 <textarea id="p-description" rows="3"></textarea>
               </div>
               <div class="form-field">
-                <label for="p-image">Product Photo</label>
-                <input type="file" id="p-image" accept="image/*">
-                <div id="p-image-preview" class="admin-image-preview"></div>
-              </div>
+  <label for="p-image">Product Photos</label>
+
+  <input
+    type="file"
+    id="p-image"
+    accept="image/*"
+    multiple
+  >
+
+  <small style="display:block; margin-top:7px; opacity:.7;">
+    Upload multiple photos. The first photo is the main product image.
+  </small>
+
+  <div
+    id="p-image-preview"
+    class="admin-image-preview"
+    style="
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
+      gap:10px;
+      margin-top:12px;
+    "
+  ></div>
+</div>
+
+<div class="form-field">
+  <label>Product Colors</label>
+
+  <div
+    style="
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    "
+  >
+    <input
+      type="text"
+      id="p-color-name"
+      placeholder="Color name e.g. Black Silver"
+      style="flex:1;min-width:180px;"
+    >
+
+    <input
+      type="color"
+      id="p-color-hex"
+      value="#ffffff"
+      title="Choose color"
+      style="
+        width:52px;
+        height:44px;
+        padding:4px;
+        cursor:pointer;
+      "
+    >
+
+    <button
+      type="button"
+      class="btn btn-ghost"
+      id="p-add-color"
+    >
+      + Add Color
+    </button>
+  </div>
+
+  <div
+    id="p-colors-list"
+    style="
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+    "
+  ></div>
+
+  <small style="display:block;margin-top:8px;opacity:.7;">
+    Add each available color and assign it to one of the uploaded photos.
+  </small>
+</div>
               <div style="display:flex;gap:12px;">
                 <button type="submit" class="btn btn-primary" id="product-save-btn">
                   <svg><use href="#icon-plus"></use></svg> <span id="product-save-label">Add Product</span>

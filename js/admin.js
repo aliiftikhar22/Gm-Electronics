@@ -569,62 +569,737 @@ if (addColorBtn) {
 
   cancelBtn.style.display = 'none';
 }
-    cancelBtn.addEventListener('click', resetForm);
+ cancelBtn.addEventListener('click', resetForm);
 
-    db.collection('products').orderBy('createdAt', 'desc').onSnapshot(function (snapshot) {
-      if (snapshot.empty) {
-        listEl.innerHTML = '<p>No products added yet — use the form above to add your first one.</p>';
-        return;
-      }
-      var rows = [];
-      snapshot.forEach(function (doc) {
-        var p = doc.data();
-        var img = p.imageUrl
-          ? '<img src="' + escapeHtml(p.imageUrl) + '" alt="">'
-          : '<div class="product-card-noimg" style="height:100%;"><svg><use href="#icon-image"></use></svg></div>';
-        rows.push(
-          '<div class="admin-product-row" data-id="' + doc.id + '">' +
-            '<div class="admin-product-thumb">' + img + '</div>' +
-            '<div class="admin-product-info">' +
-              '<strong>' + escapeHtml(p.name) + '</strong>' +
-              '<span>' + (CATEGORY_LABELS[p.category] || p.category) + ' · ' + pkr(p.priceRetail) +
-              (p.priceWholesale ? ' / ' + pkr(p.priceWholesale) + ' wholesale' : '') + '</span>' +
-            '</div>' +
-            '<div class="admin-product-actions">' +
-              '<button class="btn btn-ghost admin-edit-btn" data-id="' + doc.id + '"><svg><use href="#icon-edit"></use></svg></button>' +
-              '<button class="btn btn-ghost admin-delete-btn" data-id="' + doc.id + '"><svg><use href="#icon-trash"></use></svg></button>' +
-            '</div>' +
-          '</div>'
+
+/* ---------------- IMAGE COMPRESSION ---------------- */
+
+function compressProductImage(file, maxSize, quality) {
+
+  maxSize = maxSize || 900;
+  quality = quality || 0.72;
+
+  return new Promise(function (resolve, reject) {
+
+    var reader = new FileReader();
+
+    reader.onload = function () {
+
+      var img = new Image();
+
+      img.onload = function () {
+
+        var scale = Math.min(
+          1,
+          maxSize / Math.max(img.width, img.height)
         );
-      });
-      listEl.innerHTML = rows.join('');
 
-      listEl.querySelectorAll('.admin-edit-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          db.collection('products').doc(btn.getAttribute('data-id')).get().then(function (doc) {
-            var p = doc.data();
-            document.getElementById('product-id').value = doc.id;
-            document.getElementById('p-name').value = p.name || '';
-            document.getElementById('p-category').value = p.category || 'refrigerators';
-            document.getElementById('p-price-retail').value = p.priceRetail || '';
-            document.getElementById('p-price-wholesale').value = p.priceWholesale || '';
-            document.getElementById('p-description').value = p.description || '';
-            imagePreview.innerHTML = p.imageUrl ? '<img src="' + escapeHtml(p.imageUrl) + '" alt="">' : '';
-            saveLabel.textContent = 'Update Product';
-            formTitle.textContent = 'Edit Product';
-            cancelBtn.style.display = '';
-            window.scrollTo({ top: form.getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' });
-          });
-        });
-      });
-      listEl.querySelectorAll('.admin-delete-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          if (!confirm('Delete this product? This cannot be undone.')) return;
-          db.collection('products').doc(btn.getAttribute('data-id')).delete();
-        });
-      });
+        var canvas = document.createElement('canvas');
+
+        canvas.width = Math.max(
+          1,
+          Math.round(img.width * scale)
+        );
+
+        canvas.height = Math.max(
+          1,
+          Math.round(img.height * scale)
+        );
+
+        var ctx = canvas.getContext('2d');
+
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        resolve(
+          canvas.toDataURL(
+            'image/webp',
+            quality
+          )
+        );
+      };
+
+      img.onerror = reject;
+
+      img.src = reader.result;
+    };
+
+    reader.onerror = reject;
+
+    reader.readAsDataURL(file);
+  });
+}
+
+
+/* ---------------- COLOR MAP ---------------- */
+
+var COLOR_MAP = {
+
+  black: '#000000',
+  white: '#ffffff',
+
+  silver: '#c0c0c0',
+  'black silver': '#4A4A4A',
+  'black gold': '#8A6A20',
+
+  grey: '#808080',
+  gray: '#808080',
+
+  red: '#ff0000',
+  blue: '#0000ff',
+  green: '#008000',
+  yellow: '#ffff00',
+  orange: '#ffa500',
+  pink: '#ffc0cb',
+  purple: '#800080',
+  brown: '#8b4513',
+  gold: '#ffd700',
+
+  beige: '#f5f5dc',
+  cream: '#fffdd0',
+  maroon: '#800000',
+  navy: '#000080',
+
+  'dark green': '#006400',
+  'light green': '#90ee90',
+  'dark blue': '#00008b',
+  'light blue': '#add8e6',
+
+  ivory: '#fffff0',
+  'rose gold': '#b76e79'
+};
+
+
+/* ---------------- AUTOMATIC COLOR HEX ---------------- */
+
+if (colorNameInput) {
+
+  colorNameInput.addEventListener('input', function () {
+
+    var name = colorNameInput.value
+      .trim()
+      .toLowerCase();
+
+    if (COLOR_MAP[name]) {
+      colorHexInput.value = COLOR_MAP[name];
+    }
+
+  });
+
+}
+
+
+/* ---------------- PRODUCT IMAGE UPLOAD ---------------- */
+
+imageInput.addEventListener('change', async function () {
+
+  var files = Array.from(
+    imageInput.files || []
+  );
+
+  if (!files.length) return;
+
+  try {
+
+    statusEl.textContent = 'Processing images...';
+    statusEl.classList.add('show');
+
+    var converted = await Promise.all(
+      files.map(function (file) {
+        return compressProductImage(file);
+      })
+    );
+
+    productImages.push.apply(
+      productImages,
+      converted
+    );
+
+    imagePreview.innerHTML = '';
+
+    productImages.forEach(function (src, index) {
+
+      var wrapper = document.createElement('div');
+
+      wrapper.style.cssText =
+        'position:relative;' +
+        'border:1px solid rgba(255,255,255,.12);' +
+        'border-radius:10px;' +
+        'overflow:hidden;' +
+        'background:#111;' +
+        'aspect-ratio:1/1;';
+
+      var img = document.createElement('img');
+
+      img.src = src;
+
+      img.style.cssText =
+        'width:100%;' +
+        'height:100%;' +
+        'object-fit:contain;' +
+        'display:block;';
+
+      wrapper.appendChild(img);
+
+
+      if (index === 0) {
+
+        var mainBadge = document.createElement('span');
+
+        mainBadge.textContent = 'MAIN';
+
+        mainBadge.style.cssText =
+          'position:absolute;' +
+          'left:6px;' +
+          'bottom:6px;' +
+          'padding:3px 6px;' +
+          'font-size:9px;' +
+          'font-weight:700;' +
+          'background:#fff;' +
+          'color:#111;' +
+          'border-radius:5px;';
+
+        wrapper.appendChild(mainBadge);
+      }
+
+
+      imagePreview.appendChild(wrapper);
+
     });
+
+    imageInput.value = '';
+
+    statusEl.textContent =
+      productImages.length +
+      ' image(s) ready to save.';
+
+  } catch (err) {
+
+    console.error(err);
+
+    statusEl.textContent =
+      'Could not process one or more images.';
+
   }
+
+});
+
+
+/* ---------------- PRODUCT SAVE ---------------- */
+
+form.addEventListener('submit', async function (e) {
+
+  e.preventDefault();
+
+  statusEl.classList.remove('show', 'ok');
+
+  var id =
+    document.getElementById('product-id').value.trim();
+
+  var name =
+    document.getElementById('p-name').value.trim();
+
+  var category =
+    document.getElementById('p-category').value;
+
+  var priceRetail =
+    Number(
+      document.getElementById('p-price-retail').value
+    ) || 0;
+
+  var wholesaleValue =
+    document.getElementById('p-price-wholesale').value;
+
+  var priceWholesale =
+    wholesaleValue
+      ? Number(wholesaleValue)
+      : null;
+
+  var description =
+    document.getElementById('p-description').value.trim();
+
+
+  if (!name) {
+
+    statusEl.textContent =
+      'Please enter a product name.';
+
+    statusEl.classList.add('show');
+
+    return;
+  }
+
+
+  if (!productImages.length) {
+
+    statusEl.textContent =
+      'Please upload at least one product photo.';
+
+    statusEl.classList.add('show');
+
+    return;
+  }
+
+
+  var saveBtn =
+    document.getElementById('product-save-btn');
+
+  saveBtn.disabled = true;
+
+  saveLabel.textContent =
+    id ? 'Updating...' : 'Saving...';
+
+
+  var data = {
+
+    name: name,
+
+    category: category,
+
+    priceRetail: priceRetail,
+
+    priceWholesale: priceWholesale,
+
+    description: description,
+
+    image: productImages[0],
+
+    imageUrl: productImages[0],
+
+    images: productImages,
+
+    colors: productColors
+
+  };
+
+
+  if (!id) {
+
+    data.createdAt =
+      firebase.firestore.FieldValue.serverTimestamp();
+
+  }
+
+
+  try {
+
+    if (id) {
+
+      await db
+        .collection('products')
+        .doc(id)
+        .update(data);
+
+    } else {
+
+      await db
+        .collection('products')
+        .add(data);
+
+    }
+
+
+    statusEl.textContent =
+      id
+        ? 'Product updated successfully!'
+        : 'Product added successfully!';
+
+    statusEl.classList.add(
+      'show',
+      'ok'
+    );
+
+
+    resetForm();
+
+  } catch (err) {
+
+    console.error(
+      'Product save error:',
+      err
+    );
+
+    statusEl.textContent =
+      'Save failed: ' +
+      err.message;
+
+    statusEl.classList.add('show');
+
+  } finally {
+
+    saveBtn.disabled = false;
+
+    saveLabel.textContent =
+      id
+        ? 'Update Product'
+        : 'Add Product';
+
+  }
+
+});
+
+
+/* ---------------- LOAD PRODUCTS ---------------- */
+
+db.collection('products')
+  .orderBy('createdAt', 'desc')
+  .onSnapshot(function (snapshot) {
+
+    if (snapshot.empty) {
+
+      listEl.innerHTML =
+        '<p>No products added yet — use the form above to add your first one.</p>';
+
+      return;
+    }
+
+    var rows = [];
+
+
+    snapshot.forEach(function (doc) {
+
+      var p = doc.data();
+
+      var images =
+        Array.isArray(p.images) &&
+        p.images.length
+          ? p.images
+          : (
+              p.imageUrl
+                ? [p.imageUrl]
+                : (
+                    p.image
+                      ? [p.image]
+                      : []
+                  )
+            );
+
+
+      var img =
+        images.length
+
+          ? '<img src="' +
+              escapeHtml(images[0]) +
+              '" alt="">'
+
+          : '<div class="product-card-noimg" style="height:100%;">' +
+              '<svg><use href="#icon-image"></use></svg>' +
+            '</div>';
+
+
+      var colorCount =
+        Array.isArray(p.colors)
+          ? p.colors.length
+          : 0;
+
+
+      rows.push(
+
+        '<div class="admin-product-row" data-id="' +
+          doc.id +
+        '">' +
+
+          '<div class="admin-product-thumb">' +
+            img +
+          '</div>' +
+
+          '<div class="admin-product-info">' +
+
+            '<strong>' +
+              escapeHtml(p.name) +
+            '</strong>' +
+
+            '<span>' +
+              (
+                CATEGORY_LABELS[p.category] ||
+                p.category ||
+                ''
+              ) +
+
+              ' · ' +
+
+              pkr(p.priceRetail) +
+
+              (
+                p.priceWholesale
+                  ? ' / ' +
+                    pkr(p.priceWholesale) +
+                    ' wholesale'
+                  : ''
+              ) +
+
+              (
+                images.length > 1
+                  ? ' · ' +
+                    images.length +
+                    ' photos'
+                  : ''
+              ) +
+
+              (
+                colorCount
+                  ? ' · ' +
+                    colorCount +
+                    ' colors'
+                  : ''
+              ) +
+
+            '</span>' +
+
+          '</div>' +
+
+          '<div class="admin-product-actions">' +
+
+            '<button class="btn btn-ghost admin-edit-btn" data-id="' +
+              doc.id +
+              '">' +
+
+              '<svg><use href="#icon-edit"></use></svg>' +
+
+            '</button>' +
+
+            '<button class="btn btn-ghost admin-delete-btn" data-id="' +
+              doc.id +
+              '">' +
+
+              '<svg><use href="#icon-trash"></use></svg>' +
+
+            '</button>' +
+
+          '</div>' +
+
+        '</div>'
+
+      );
+
+    });
+
+
+    listEl.innerHTML =
+      rows.join('');
+
+
+    /* ---------------- EDIT ---------------- */
+
+    listEl
+      .querySelectorAll('.admin-edit-btn')
+      .forEach(function (btn) {
+
+        btn.addEventListener(
+          'click',
+          function () {
+
+            db
+              .collection('products')
+              .doc(
+                btn.getAttribute('data-id')
+              )
+              .get()
+              .then(function (doc) {
+
+                var p = doc.data();
+
+
+                document.getElementById(
+                  'product-id'
+                ).value = doc.id;
+
+
+                document.getElementById(
+                  'p-name'
+                ).value = p.name || '';
+
+
+                document.getElementById(
+                  'p-category'
+                ).value =
+                  p.category ||
+                  'refrigerators';
+
+
+                document.getElementById(
+                  'p-price-retail'
+                ).value =
+                  p.priceRetail || '';
+
+
+                document.getElementById(
+                  'p-price-wholesale'
+                ).value =
+                  p.priceWholesale || '';
+
+
+                document.getElementById(
+                  'p-description'
+                ).value =
+                  p.description || '';
+
+
+                productImages =
+                  Array.isArray(p.images) &&
+                  p.images.length
+
+                    ? p.images.slice()
+
+                    : (
+                        p.imageUrl
+                          ? [p.imageUrl]
+                          : (
+                              p.image
+                                ? [p.image]
+                                : []
+                            )
+                      );
+
+
+                productColors =
+                  Array.isArray(p.colors)
+                    ? p.colors.slice()
+                    : [];
+
+
+                imagePreview.innerHTML = '';
+
+
+                productImages.forEach(
+                  function (src, index) {
+
+                    var wrapper =
+                      document.createElement(
+                        'div'
+                      );
+
+                    wrapper.style.cssText =
+                      'position:relative;' +
+                      'border:1px solid rgba(255,255,255,.12);' +
+                      'border-radius:10px;' +
+                      'overflow:hidden;' +
+                      'background:#111;' +
+                      'aspect-ratio:1/1;';
+
+                    var img =
+                      document.createElement(
+                        'img'
+                      );
+
+                    img.src = src;
+
+                    img.style.cssText =
+                      'width:100%;' +
+                      'height:100%;' +
+                      'object-fit:contain;' +
+                      'display:block;';
+
+                    wrapper.appendChild(img);
+
+
+                    if (index === 0) {
+
+                      var badge =
+                        document.createElement(
+                          'span'
+                        );
+
+                      badge.textContent =
+                        'MAIN';
+
+                      badge.style.cssText =
+                        'position:absolute;' +
+                        'left:6px;' +
+                        'bottom:6px;' +
+                        'padding:3px 6px;' +
+                        'font-size:9px;' +
+                        'font-weight:700;' +
+                        'background:#fff;' +
+                        'color:#111;' +
+                        'border-radius:5px;';
+
+                      wrapper.appendChild(
+                        badge
+                      );
+
+                    }
+
+
+                    imagePreview.appendChild(
+                      wrapper
+                    );
+
+                  }
+                );
+
+
+                renderProductColors();
+
+
+                saveLabel.textContent =
+                  'Update Product';
+
+                formTitle.textContent =
+                  'Edit Product';
+
+                cancelBtn.style.display =
+                  '';
+
+
+                window.scrollTo({
+
+                  top:
+                    form.getBoundingClientRect()
+                      .top +
+                    window.scrollY -
+                    100,
+
+                  behavior:
+                    'smooth'
+
+                });
+
+              });
+
+          }
+        );
+
+      });
+
+
+    /* ---------------- DELETE ---------------- */
+
+    listEl
+      .querySelectorAll('.admin-delete-btn')
+      .forEach(function (btn) {
+
+        btn.addEventListener(
+          'click',
+          function () {
+
+            if (
+              !confirm(
+                'Delete this product? This cannot be undone.'
+              )
+            ) {
+              return;
+            }
+
+
+            db
+              .collection('products')
+              .doc(
+                btn.getAttribute('data-id')
+              )
+              .delete();
+
+          }
+        );
+
+      });
+
+  });
     
   /* ---------------- Orders ---------------- */
   var ordersInitialized = false;

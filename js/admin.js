@@ -334,17 +334,214 @@ document.addEventListener('DOMContentLoaded', function () {
     var formTitle = document.getElementById('product-form-title');
     loadCategoryOptions();
 
-    var imageInput = document.getElementById('p-image');
-    var imagePreview = document.getElementById('p-image-preview');
+ var imageInput = document.getElementById('p-image');
+var imagePreview = document.getElementById('p-image-preview');
 
-    imageInput.addEventListener('change', function () {
-      imagePreview.innerHTML = '';
-      var file = imageInput.files[0];
-      if (!file) return;
-      var img = document.createElement('img');
-      img.src = URL.createObjectURL(file);
-      imagePreview.appendChild(img);
+var colorNameInput = document.getElementById('p-color-name');
+var colorHexInput = document.getElementById('p-color-hex');
+var addColorBtn = document.getElementById('p-add-color');
+var colorsList = document.getElementById('p-colors-list');
+
+var productImages = [];
+var productColors = [];
+
+
+/* ---------------- MULTIPLE IMAGE PREVIEW ---------------- */
+
+imageInput.addEventListener('change', function () {
+
+  imagePreview.innerHTML = '';
+  productImages = [];
+
+  Array.from(imageInput.files || []).forEach(function (file, index) {
+
+    productImages.push({
+      file: file,
+      url: URL.createObjectURL(file)
     });
+
+    var wrapper = document.createElement('div');
+
+    wrapper.style.cssText =
+      'position:relative;' +
+      'border:1px solid rgba(255,255,255,.12);' +
+      'border-radius:10px;' +
+      'overflow:hidden;' +
+      'background:#111;' +
+      'aspect-ratio:1/1;';
+
+    var img = document.createElement('img');
+
+    img.src = productImages[index].url;
+
+    img.style.cssText =
+      'width:100%;' +
+      'height:100%;' +
+      'object-fit:contain;' +
+      'display:block;';
+
+    wrapper.appendChild(img);
+
+    if (index === 0) {
+
+      var mainBadge = document.createElement('span');
+
+      mainBadge.textContent = 'MAIN';
+
+      mainBadge.style.cssText =
+        'position:absolute;' +
+        'left:6px;' +
+        'bottom:6px;' +
+        'padding:3px 6px;' +
+        'font-size:9px;' +
+        'font-weight:700;' +
+        'background:#fff;' +
+        'color:#111;' +
+        'border-radius:5px;';
+
+      wrapper.appendChild(mainBadge);
+    }
+
+    imagePreview.appendChild(wrapper);
+  });
+
+});
+
+
+/* ---------------- COLORS ---------------- */
+
+function renderProductColors() {
+
+  if (!colorsList) return;
+
+  colorsList.innerHTML = '';
+
+  productColors.forEach(function (color, index) {
+
+    var chip = document.createElement('div');
+
+    chip.style.cssText =
+      'display:flex;' +
+      'align-items:center;' +
+      'gap:7px;' +
+      'padding:7px 10px;' +
+      'border:1px solid rgba(255,255,255,.12);' +
+      'border-radius:20px;' +
+      'background:rgba(255,255,255,.04);';
+
+    var swatch = document.createElement('span');
+
+    swatch.style.cssText =
+      'width:18px;' +
+      'height:18px;' +
+      'border-radius:50%;' +
+      'background:' + color.hex + ';' +
+      'border:1px solid rgba(255,255,255,.4);' +
+      'display:inline-block;';
+
+    var text = document.createElement('span');
+
+    text.textContent =
+      color.name +
+      ' → Photo ' +
+      (Number(color.imageIndex) + 1);
+
+    var removeBtn = document.createElement('button');
+
+    removeBtn.type = 'button';
+    removeBtn.textContent = '×';
+
+    removeBtn.style.cssText =
+      'border:0;' +
+      'background:none;' +
+      'color:inherit;' +
+      'cursor:pointer;' +
+      'font-size:16px;';
+
+    removeBtn.addEventListener('click', function () {
+
+      productColors.splice(index, 1);
+
+      renderProductColors();
+
+    });
+
+    chip.appendChild(swatch);
+    chip.appendChild(text);
+    chip.appendChild(removeBtn);
+
+    colorsList.appendChild(chip);
+
+  });
+}
+
+
+/* ---------------- ADD COLOR ---------------- */
+
+if (addColorBtn) {
+
+  addColorBtn.addEventListener('click', function () {
+
+    var name = colorNameInput.value.trim();
+    var hex = colorHexInput.value || '#ffffff';
+
+    if (!name) {
+      alert('Enter a color name first.');
+      return;
+    }
+
+    if (!productImages.length) {
+      alert('Upload product photos first.');
+      return;
+    }
+
+
+    /*
+     * Ask which uploaded photo belongs to this color.
+     */
+    var photoNumber = prompt(
+      'Which photo should be used for "' +
+      name +
+      '"?\n\nEnter photo number:\n1 = first photo\n2 = second photo\n3 = third photo, etc.'
+    );
+
+    if (photoNumber === null) return;
+
+    var imageIndex = Number(photoNumber) - 1;
+
+    if (
+      !Number.isInteger(imageIndex) ||
+      imageIndex < 0 ||
+      imageIndex >= productImages.length
+    ) {
+
+      alert(
+        'Invalid photo number. Choose between 1 and ' +
+        productImages.length + '.'
+      );
+
+      return;
+    }
+
+
+    productColors.push({
+
+      name: name,
+
+      hex: hex,
+
+      imageIndex: imageIndex
+
+    });
+
+
+    colorNameInput.value = '';
+
+    renderProductColors();
+
+  });
+
+}
 
     function resetForm() {
       form.reset();

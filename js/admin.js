@@ -543,14 +543,32 @@ if (addColorBtn) {
 
 }
 
-    function resetForm() {
-      form.reset();
-      document.getElementById('product-id').value = '';
-      imagePreview.innerHTML = '';
-      saveLabel.textContent = 'Add Product';
-      formTitle.textContent = 'Add A Product';
-      cancelBtn.style.display = 'none';
-    }
+   function resetForm() {
+
+  form.reset();
+
+  document.getElementById('product-id').value = '';
+
+  imagePreview.innerHTML = '';
+
+  productImages = [];
+
+  productColors = [];
+
+  if (colorsList) {
+    colorsList.innerHTML = '';
+  }
+
+  if (colorHexInput) {
+    colorHexInput.value = '#ffffff';
+  }
+
+  saveLabel.textContent = 'Add Product';
+
+  formTitle.textContent = 'Add A Product';
+
+  cancelBtn.style.display = 'none';
+}
     cancelBtn.addEventListener('click', resetForm);
 
     db.collection('products').orderBy('createdAt', 'desc').onSnapshot(function (snapshot) {

@@ -1348,5 +1348,4 @@ db.collection('products')
         });
       });
     });
-});
 }

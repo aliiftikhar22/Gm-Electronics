@@ -10,6 +10,10 @@ var DEFAULT_CATEGORY_META = {
 var CATEGORY_META = {};
 var CATEGORY_ORDER = [];
 
+/* Module-level cache — populated after Firestore load.
+   The two document.addEventListener('click') handlers reference this. */
+var productCache = [];
+
 function escapeHtml(str) {
   return String(str || '').replace(/[&<>"']/g, function (c) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -282,6 +286,11 @@ document.addEventListener('click', function (e) {
       (selectedColor.name || '');
   }
 
+  /*
+   * Keep gallery arrow state in sync with the color switch.
+   */
+  card.setAttribute('data-image-index', imageIndex);
+
 
   /*
    * Change active swatch.
@@ -524,25 +533,39 @@ document.addEventListener('DOMContentLoaded', function () {
       var products = [];
       snapshot.forEach(function (doc) {
         var d = doc.data();
+
+        /* Normalize images: filter out any non-string entries */
+        var imgs = Array.isArray(d.images)
+          ? d.images.filter(function (img) {
+              return typeof img === 'string' && img.trim();
+            })
+          : [];
+        if (!imgs.length && d.imageUrl) imgs = [d.imageUrl];
+        if (!imgs.length && d.image)    imgs = [d.image];
+
+        /* Normalize colors */
+        var cols = Array.isArray(d.colors)
+          ? d.colors.filter(function (c) {
+              return c && typeof c === 'object' && c.name;
+            })
+          : [];
+
         products.push({
-  id: doc.id,
-  name: d.name || 'Unnamed product',
-  category: d.category,
-  priceRetail: Number(d.priceRetail) || 0,
-  priceWholesale: d.priceWholesale ? Number(d.priceWholesale) : null,
-  description: d.description || '',
-
-  imageUrl: d.imageUrl || '',
-
-  images: Array.isArray(d.images) && d.images.length
-    ? d.images
-    : (d.imageUrl ? [d.imageUrl] : []),
-
-  colors: Array.isArray(d.colors)
-    ? d.colors
-    : []
-});
+          id: doc.id,
+          name: d.name || 'Unnamed product',
+          category: d.category,
+          priceRetail: Number(d.priceRetail) || 0,
+          priceWholesale: d.priceWholesale ? Number(d.priceWholesale) : null,
+          description: d.description || '',
+          imageUrl: d.imageUrl || '',
+          images: imgs,
+          colors: cols
+        });
       });
+
+      /* Expose to module-level so click handlers can find products */
+      productCache = products;
+
       renderProducts(products);
 
       // Support direct links such as products.html#washing-machines.

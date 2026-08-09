@@ -659,57 +659,124 @@ imageInput.addEventListener('change', async function () {
       converted
     );
 
-    imagePreview.innerHTML = '';
+   imagePreview.innerHTML = '';
 
-    productImages.forEach(function (src, index) {
+productImages.forEach(function (src, index) {
 
-      var wrapper = document.createElement('div');
+  var wrapper = document.createElement('div');
 
-      wrapper.style.cssText =
-        'position:relative;' +
-        'border:1px solid rgba(255,255,255,.12);' +
-        'border-radius:10px;' +
-        'overflow:hidden;' +
-        'background:#111;' +
-        'aspect-ratio:1/1;';
+  wrapper.style.cssText =
+    'position:relative;' +
+    'border:1px solid rgba(255,255,255,.12);' +
+    'border-radius:10px;' +
+    'overflow:hidden;' +
+    'background:#111;' +
+    'aspect-ratio:1/1;';
 
-      var img = document.createElement('img');
+  var img = document.createElement('img');
 
-      img.src = src;
+  img.src = src;
 
-      img.style.cssText =
-        'width:100%;' +
-        'height:100%;' +
-        'object-fit:contain;' +
-        'display:block;';
+  img.style.cssText =
+    'width:100%;' +
+    'height:100%;' +
+    'object-fit:contain;' +
+    'display:block;';
 
-      wrapper.appendChild(img);
+  wrapper.appendChild(img);
 
 
-      if (index === 0) {
+  /* MAIN BADGE */
 
-        var mainBadge = document.createElement('span');
+  if (index === 0) {
 
-        mainBadge.textContent = 'MAIN';
+    var mainBadge = document.createElement('span');
 
-        mainBadge.style.cssText =
-          'position:absolute;' +
-          'left:6px;' +
-          'bottom:6px;' +
-          'padding:3px 6px;' +
-          'font-size:9px;' +
-          'font-weight:700;' +
-          'background:#fff;' +
-          'color:#111;' +
-          'border-radius:5px;';
+    mainBadge.textContent = 'MAIN';
 
-        wrapper.appendChild(mainBadge);
+    mainBadge.style.cssText =
+      'position:absolute;' +
+      'left:6px;' +
+      'bottom:6px;' +
+      'padding:3px 6px;' +
+      'font-size:9px;' +
+      'font-weight:700;' +
+      'background:#fff;' +
+      'color:#111;' +
+      'border-radius:5px;';
+
+    wrapper.appendChild(mainBadge);
+  }
+
+
+  /* DELETE PHOTO BUTTON */
+
+  var deleteBtn = document.createElement('button');
+
+  deleteBtn.type = 'button';
+  deleteBtn.textContent = '×';
+  deleteBtn.title = 'Delete photo';
+
+  deleteBtn.style.cssText =
+    'position:absolute;' +
+    'top:6px;' +
+    'right:6px;' +
+    'width:28px;' +
+    'height:28px;' +
+    'border:0;' +
+    'border-radius:50%;' +
+    'background:rgba(0,0,0,.75);' +
+    'color:#fff;' +
+    'font-size:20px;' +
+    'line-height:28px;' +
+    'cursor:pointer;' +
+    'z-index:10;';
+
+  deleteBtn.addEventListener('click', function () {
+
+    if (productImages.length <= 1) {
+      alert('A product must have at least one photo.');
+      return;
+    }
+
+    /* Remove this photo */
+    productImages.splice(index, 1);
+
+
+    /* Fix color → image mappings */
+
+    productColors = productColors.filter(function (color) {
+
+      var colorImageIndex = Number(color.imageIndex);
+
+      /* Delete color if its photo was deleted */
+      if (colorImageIndex === index) {
+        return false;
       }
 
+      /* Move mapping back if needed */
+      if (colorImageIndex > index) {
+        color.imageIndex = colorImageIndex - 1;
+      }
 
-      imagePreview.appendChild(wrapper);
+      return true;
 
     });
+
+
+    /* Rebuild preview */
+    renderProductImagePreview();
+
+    /* Rebuild colors */
+    renderProductColors();
+
+  });
+
+  wrapper.appendChild(deleteBtn);
+
+  imagePreview.appendChild(wrapper);
+
+});
 
     imageInput.value = '';
 

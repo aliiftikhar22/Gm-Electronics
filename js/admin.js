@@ -345,7 +345,126 @@ var colorsList = document.getElementById('p-colors-list');
 var productImages = [];
 var productColors = [];
 
+/* ---------------- PRODUCT IMAGE PREVIEW ---------------- */
 
+function renderProductImagePreview() {
+
+  imagePreview.innerHTML = '';
+
+  productImages.forEach(function (src, index) {
+
+    var wrapper = document.createElement('div');
+
+    wrapper.style.cssText =
+      'position:relative;' +
+      'border:1px solid rgba(255,255,255,.12);' +
+      'border-radius:10px;' +
+      'overflow:hidden;' +
+      'background:#111;' +
+      'aspect-ratio:1/1;';
+
+    var img = document.createElement('img');
+
+    img.src = src;
+
+    img.style.cssText =
+      'width:100%;' +
+      'height:100%;' +
+      'object-fit:contain;' +
+      'display:block;';
+
+    wrapper.appendChild(img);
+
+
+    /* MAIN BADGE */
+
+    if (index === 0) {
+
+      var mainBadge = document.createElement('span');
+
+      mainBadge.textContent = 'MAIN';
+
+      mainBadge.style.cssText =
+        'position:absolute;' +
+        'left:6px;' +
+        'bottom:6px;' +
+        'padding:3px 6px;' +
+        'font-size:9px;' +
+        'font-weight:700;' +
+        'background:#fff;' +
+        'color:#111;' +
+        'border-radius:5px;';
+
+      wrapper.appendChild(mainBadge);
+    }
+
+
+    /* DELETE BUTTON */
+
+    var deleteBtn = document.createElement('button');
+
+    deleteBtn.type = 'button';
+    deleteBtn.textContent = '×';
+    deleteBtn.title = 'Delete photo';
+
+    deleteBtn.style.cssText =
+      'position:absolute;' +
+      'top:6px;' +
+      'right:6px;' +
+      'width:28px;' +
+      'height:28px;' +
+      'border:0;' +
+      'border-radius:50%;' +
+      'background:rgba(0,0,0,.75);' +
+      'color:#fff;' +
+      'font-size:20px;' +
+      'line-height:28px;' +
+      'cursor:pointer;' +
+      'z-index:10;';
+
+    deleteBtn.addEventListener('click', function () {
+
+      if (productImages.length <= 1) {
+        alert('A product must have at least one photo.');
+        return;
+      }
+
+      productImages.splice(index, 1);
+
+
+      /* Fix color image mappings */
+
+      productColors = productColors.filter(function (color) {
+
+        var colorImageIndex = Number(color.imageIndex);
+
+        /* Remove color assigned to deleted photo */
+        if (colorImageIndex === index) {
+          return false;
+        }
+
+        /* Shift later photo indexes */
+        if (colorImageIndex > index) {
+          color.imageIndex = colorImageIndex - 1;
+        }
+
+        return true;
+
+      });
+
+
+      renderProductImagePreview();
+      renderProductColors();
+
+    });
+
+    wrapper.appendChild(deleteBtn);
+
+    imagePreview.appendChild(wrapper);
+
+  });
+
+}
 
 /* ---------------- COLORS ---------------- */
 

@@ -408,19 +408,23 @@ function renderProductImagePreview() {
     deleteBtn.title = 'Delete photo';
 
     deleteBtn.style.cssText =
-      'position:absolute;' +
-      'top:6px;' +
-      'right:6px;' +
-      'width:28px;' +
-      'height:28px;' +
-      'border:0;' +
-      'border-radius:50%;' +
-      'background:rgba(0,0,0,.75);' +
-      'color:#fff;' +
-      'font-size:20px;' +
-      'line-height:28px;' +
-      'cursor:pointer;' +
-      'z-index:10;';
+  'position:absolute;' +
+  'top:5px;' +
+  'right:5px;' +
+  'width:32px;' +
+  'height:32px;' +
+  'padding:0;' +
+  'border:2px solid #fff;' +
+  'border-radius:50%;' +
+  'background:#e53935;' +
+  'color:#fff;' +
+  'font-size:22px;' +
+  'font-weight:700;' +
+  'line-height:26px;' +
+  'text-align:center;' +
+  'cursor:pointer;' +
+  'z-index:9999;' +
+  'display:block;';
 
     deleteBtn.addEventListener('click', function () {
 

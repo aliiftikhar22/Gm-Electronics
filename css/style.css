@@ -666,6 +666,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .admin-tabs{ display:flex; gap:10px; margin-bottom: 30px; }
 .admin-image-preview{ margin-top:10px; }
 .admin-image-preview img{ max-width:160px; border-radius: var(--radius); border:1px solid var(--gray-200); }
+.admin-image-preview > div {
+  position: relative !important;
+}
+
+.admin-image-preview button {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
 
 .admin-products-list{ display:flex; flex-direction:column; gap:10px; }
 .admin-product-row{

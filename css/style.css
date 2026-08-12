@@ -337,26 +337,19 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   position:relative;
 }
 .cat-card:hover{ transform: translateY(-4px); box-shadow: var(--shadow-lift); border-color: var(--gray-200); }
-.cat-icon{
+.cat-icon {
   width: 100%;
-  height: 100px;
+  height: 110px;
   border-radius: 10px;
   background: var(--blue-light);
-  color: var(--blue);
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   margin-bottom: 20px;
+  overflow: hidden;
 }
+
 .cat-icon svg{ width:28px; height:28px; }
-.cat-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  border-radius: inherit;
-}
 .cat-card h3{ font-size: 1.18rem; margin-bottom:.35em; }
 .cat-card p{ font-size:.94rem; margin-bottom: 16px; }
 .cat-tags{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 18px; }
@@ -808,9 +801,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   min-height: 1.2em;
 }
 .cat-icon img {
-  width: 75%;
-  height: 75%;
-  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: contain !important;
+  object-position: center;
   display: block;
-  border-radius: inherit;
 }
+  

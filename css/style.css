@@ -338,11 +338,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 }
 .cat-card:hover{ transform: translateY(-4px); box-shadow: var(--shadow-lift); border-color: var(--gray-200); }
 .cat-icon{
-  width: 56px; height:56px;
+  width: 100%;
+  height: 160px;
   border-radius: 10px;
   background: var(--blue-light);
   color: var(--blue);
-  display:flex; align-items:center; justify-content:center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
   margin-bottom: 20px;
 }
 .cat-icon svg{ width:28px; height:28px; }

@@ -811,17 +811,18 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 }
 .gm-gallery-photo {
   width: 100%;
-  height: 220px;
+  border-radius: 12px;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  background: #f5f7fa;
 }
 
 .gm-gallery-photo img {
   width: 100%;
-  height: 100%;
+  height: auto;
+  max-height: 260px;
   object-fit: contain;
   object-position: center;
   display: block;

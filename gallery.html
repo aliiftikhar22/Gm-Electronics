@@ -39,6 +39,56 @@
 
 <link rel="stylesheet" href="css/style.css">
 
+
+<style>
+  .gm-featured-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .gm-gallery-featured {
+    cursor: pointer;
+  }
+  .gm-gallery-photo {
+    width: 100%;
+    height: 300px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #f4f6f8;
+  }
+  .gm-gallery-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .25s ease;
+  }
+  .gm-gallery-featured:hover .gm-gallery-photo img {
+    transform: scale(1.03);
+  }
+  .gm-lightbox-photo {
+    width: min(760px, 90vw);
+    max-height: 65vh;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #111;
+    margin-bottom: 18px;
+  }
+  .lightbox-image {
+    width: 100%;
+    max-height: 65vh;
+    object-fit: contain;
+    display: block;
+  }
+  @media (max-width: 700px) {
+    .gm-featured-gallery {
+      grid-template-columns: 1fr;
+    }
+    .gm-gallery-photo {
+      height: 240px;
+    }
+  }
+</style>
 </head>
 <body>
 <svg style="display:none" aria-hidden="true">
@@ -251,60 +301,28 @@
 
   <section class="section">
     <div class="container">
-      <div class="gallery-grid">
+      <div class="gallery-grid gm-featured-gallery">
 
-        <figure class="gallery-tile" data-icon="icon-fridge" data-title="Single-Door Refrigerators" data-desc="Compact refrigerators suited to smaller homes and kitchens. Available at retail and wholesale pricing.">
-          <div class="cat-icon"><svg><use href="#icon-fridge"></use></svg></div>
-          <h4>Single-Door Refrigerators</h4>
-          <figcaption>Refrigerators</figcaption>
+        <figure class="gallery-tile gm-gallery-featured"
+          data-image="images/ceo.jpg"
+          data-title="Photos of Our CEO"
+          data-desc="Meet the leadership behind GM Electronics and the people who continue our appliance business legacy.">
+          <div class="gm-gallery-photo">
+            <img src="images/ceo.jpg" alt="GM Electronics CEO" loading="lazy">
+          </div>
+          <h4>Photos of Our CEO</h4>
+          <figcaption>GM Electronics Leadership</figcaption>
         </figure>
 
-        <figure class="gallery-tile" data-icon="icon-fridge" data-title="Double-Door Refrigerators" data-desc="Family-size double-door units with larger storage capacity.">
-          <div class="cat-icon"><svg><use href="#icon-fridge"></use></svg></div>
-          <h4>Double-Door Refrigerators</h4>
-          <figcaption>Refrigerators</figcaption>
-        </figure>
-
-        <figure class="gallery-tile" data-icon="icon-ac" data-title="Split Air Conditioners" data-desc="1 Ton, 1.5 Ton and 2 Ton split AC units for rooms, halls and offices.">
-          <div class="cat-icon"><svg><use href="#icon-ac"></use></svg></div>
-          <h4>Split Air Conditioners</h4>
-          <figcaption>Air Conditioners</figcaption>
-        </figure>
-
-        <figure class="gallery-tile" data-icon="icon-microwave" data-title="Microwave Ovens" data-desc="Solo and grill microwave ovens for everyday kitchen use.">
-          <div class="cat-icon"><svg><use href="#icon-microwave"></use></svg></div>
-          <h4>Microwave Ovens</h4>
-          <figcaption>Microwaves &amp; Ovens</figcaption>
-        </figure>
-
-        <figure class="gallery-tile" data-icon="icon-oven" data-title="Baking Ovens" data-desc="Home and small-bakery baking ovens.">
-          <div class="cat-icon"><svg><use href="#icon-oven"></use></svg></div>
-          <h4>Baking Ovens</h4>
-          <figcaption>Microwaves &amp; Ovens</figcaption>
-        </figure>
-
-        <figure class="gallery-tile" data-icon="icon-iron" data-title="Electric Irons" data-desc="Dry and steam irons for daily household use.">
-          <div class="cat-icon"><svg><use href="#icon-iron"></use></svg></div>
-          <h4>Electric Irons</h4>
-          <figcaption>Small Appliances</figcaption>
-        </figure>
-
-        <figure class="gallery-tile" data-icon="icon-sandwich" data-title="Sandwich Makers" data-desc="Grill-plate sandwich makers for the kitchen counter.">
-          <div class="cat-icon"><svg><use href="#icon-sandwich"></use></svg></div>
-          <h4>Sandwich Makers</h4>
-          <figcaption>Small Appliances</figcaption>
-        </figure>
-
-        <figure class="gallery-tile" data-icon="icon-fan" data-title="Exhaust Fans" data-desc="Kitchen and bathroom exhaust fans for ventilation.">
-          <div class="cat-icon"><svg><use href="#icon-fan"></use></svg></div>
-          <h4>Exhaust Fans</h4>
-          <figcaption>Small Appliances</figcaption>
-        </figure>
-
-        <figure class="gallery-tile" data-icon="icon-blender" data-title="Blenders &amp; Mixers" data-desc="Everyday kitchen blenders and mixers.">
-          <div class="cat-icon"><svg><use href="#icon-blender"></use></svg></div>
-          <h4>Blenders &amp; Mixers</h4>
-          <figcaption>Small Appliances</figcaption>
+        <figure class="gallery-tile gm-gallery-featured"
+          data-image="images/shop.jpg"
+          data-title="Our Shop"
+          data-desc="A look inside GM Electronics showroom in Lahore, where customers can explore appliances for retail and wholesale purchase.">
+          <div class="gm-gallery-photo">
+            <img src="images/shop.jpg" alt="GM Electronics Shop" loading="lazy">
+          </div>
+          <h4>Our Shop</h4>
+          <figcaption>GM Electronics · Lahore</figcaption>
         </figure>
 
       </div>
@@ -315,20 +333,16 @@
   <div class="lightbox" id="lightbox" aria-hidden="true">
     <div class="lightbox-inner">
       <button class="lightbox-close" aria-label="Close"><svg><use href="#icon-close"></use></svg></button>
-      <div class="cat-icon lightbox-icon"><svg><use href="#icon-fridge"></use></svg></div>
+      <div class="gm-lightbox-photo">
+        <img class="lightbox-image" src="" alt="">
+      </div>
       <h3 class="lightbox-title">Refrigerators</h3>
       <p class="lightbox-desc">Details</p>
       <a href="contact.html" class="btn btn-navy">Ask About This Category</a>
     </div>
   </div>
 
-  <section class="section section-steel">
-    <div class="container" style="text-align:center;">
-      <div class="eyebrow" style="justify-content:center;">Photos Coming Soon</div>
-      <h2>Real store &amp; product photography is on its way</h2>
-      <p style="max-width:56ch;margin:0 auto;">In the meantime, visit in person or contact us and we'll send photos of specific models on request.</p>
-    </div>
-  </section>
+
 
   <footer class="site-footer">
     <div class="container">

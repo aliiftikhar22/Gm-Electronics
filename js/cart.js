@@ -64,8 +64,17 @@ var GMCart = (function () {
   }
 
   function totalPrice() {
-    return getCart().reduce(function (sum, i) { return sum + (i.price * i.qty); }, 0);
-  }
+  return getCart().reduce(function (sum, i) {
+
+    var unitPrice =
+      i.qty >= 2 && i.priceWholesale
+        ? Number(i.priceWholesale)
+        : Number(i.priceRetail || i.price);
+
+    return sum + (unitPrice * i.qty);
+
+  }, 0);
+}
 
   function formatPKR(n) {
     return 'Rs. ' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');

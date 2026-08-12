@@ -230,6 +230,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var listEl = document.getElementById('admin-categories-list');
     var cancelBtn = document.getElementById('category-cancel-edit');
+    var categoryImageInput =
+  document.getElementById('category-image');
+
+var categoryImagePreview =
+  document.getElementById('category-image-preview');
+
+var categoryImageUrl = '';
 
     db.collection('categories').orderBy('sortOrder', 'asc').onSnapshot(function (snapshot) {
       var loaded = [];

@@ -20,23 +20,44 @@ var GMCart = (function () {
     updateBadge();
   }
 
-  function addItem(product, qty) {
-    qty = qty || 1;
-    var cart = getCart();
-    var existing = cart.find(function (i) { return i.id === product.id; });
-    if (existing) {
-      existing.qty += qty;
-    } else {
-      cart.push({
-        id: product.id,
-        name: product.name,
-        price: product.priceRetail,
-        image: product.imageUrl || '',
-        qty: qty
-      });
-    }
-    saveCart(cart);
+ function addItem(product, qty) {
+
+  qty = qty || 1;
+
+  var cart = getCart();
+
+  var existing = cart.find(function (i) {
+    return i.id === product.id;
+  });
+
+  if (existing) {
+
+    existing.qty += qty;
+
+  } else {
+
+    cart.push({
+
+      id: product.id,
+
+      name: product.name,
+
+      price: product.priceRetail,
+
+      priceRetail: Number(product.priceRetail || 0),
+
+      priceWholesale: Number(product.priceWholesale || 0),
+
+      image: product.imageUrl || '',
+
+      qty: qty
+
+    });
+
   }
+
+  saveCart(cart);
+}
 
   function updateQty(id, qty) {
     var cart = getCart();

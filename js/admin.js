@@ -330,14 +330,15 @@ var categoryImageUrl = '';
       }
 
       var data = {
-        name: name,
-        slug: slug,
-        icon: icon,
-        description: description,
-        sortOrder: sortOrder,
-        active: active,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      };
+  name: name,
+  slug: slug,
+  icon: icon,
+  description: description,
+  sortOrder: sortOrder,
+  active: active,
+  imageUrl: categoryImageUrl || '',
+  updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+};
 
       var request = editId
         ? db.collection('categories').doc(editId).update(data)

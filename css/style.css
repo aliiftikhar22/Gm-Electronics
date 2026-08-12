@@ -346,6 +346,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   margin-bottom: 20px;
 }
 .cat-icon svg{ width:28px; height:28px; }
+.cat-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: inherit;
+}
 .cat-card h3{ font-size: 1.18rem; margin-bottom:.35em; }
 .cat-card p{ font-size:.94rem; margin-bottom: 16px; }
 .cat-tags{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 18px; }

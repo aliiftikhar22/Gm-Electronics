@@ -237,6 +237,35 @@ var categoryImagePreview =
   document.getElementById('category-image-preview');
 
 var categoryImageUrl = '';
+    categoryImageInput.addEventListener('change', function () {
+
+  var file =
+    categoryImageInput.files &&
+    categoryImageInput.files[0];
+
+  if (!file) return;
+
+  var reader = new FileReader();
+
+  reader.onload = function (e) {
+
+    categoryImageUrl = e.target.result;
+
+    categoryImagePreview.innerHTML =
+      '<img src="' +
+      escapeHtml(categoryImageUrl) +
+      '" style="' +
+      'width:120px;' +
+      'height:120px;' +
+      'object-fit:cover;' +
+      'border-radius:12px;' +
+      'border:1px solid rgba(255,255,255,.15);' +
+      '">';
+  };
+
+  reader.readAsDataURL(file);
+
+});
 
     db.collection('categories').orderBy('sortOrder', 'asc').onSnapshot(function (snapshot) {
       var loaded = [];

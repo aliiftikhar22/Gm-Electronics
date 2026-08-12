@@ -84,14 +84,15 @@
         var categories = [];
         snapshot.forEach(function (doc) {
           var d = doc.data();
-          categories.push({
-            name: d.name || 'Unnamed category',
-            slug: d.slug || doc.id,
-            icon: d.icon || 'icon-fridge',
-            description: d.description || '',
-            sortOrder: Number(d.sortOrder) || 0,
-            active: d.active !== false
-          });
+         categories.push({
+  name: d.name || 'Unnamed category',
+  slug: d.slug || doc.id,
+  icon: d.icon || 'icon-fridge',
+  imageUrl: d.imageUrl || '',
+  description: d.description || '',
+  sortOrder: Number(d.sortOrder) || 0,
+  active: d.active !== false
+});
         });
         renderCategories(categories);
       })

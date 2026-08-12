@@ -45,8 +45,14 @@
     root.innerHTML = visible.map(function (c) {
       return (
         '<div class="cat-card">' +
-          '<div class="cat-icon"><svg><use href="#' + escapeHtml(c.icon || 'icon-fridge') + '"></use></svg></div>' +
-          '<h3>' + escapeHtml(c.name) + '</h3>' +
+'<div class="cat-icon">' +
+  (
+    c.imageUrl
+      ? '<img src="' + escapeHtml(c.imageUrl) + '" alt="' + escapeHtml(c.name) + '">' 
+      : '<svg><use href="#' + escapeHtml(c.icon || 'icon-fridge') + '"></use></svg>'
+  ) +
+'</div>' +
+        '<h3>' + escapeHtml(c.name) + '</h3>' +
           '<p>' + escapeHtml(c.description || 'Browse our latest products in this category.') + '</p>' +
           '<div class="cat-tags"><span class="tag tag-amber">Retail</span><span class="tag tag-amber">Wholesale</span></div>' +
           '<a href="products.html#' + encodeURIComponent(c.slug) + '" class="card-link">View range <svg><use href="#icon-arrow"></use></svg></a>' +
